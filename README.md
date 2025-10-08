@@ -121,4 +121,4 @@ logger:
 
 
 
-© 2025 BLOOMIN8. All rights reserved.
+© 2025 FRAIMIC. All rights reserved.
