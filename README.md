@@ -117,7 +117,7 @@ logger:
 
 -----
 
-**Find Us:** [Official Website](https://fraimic.com) | [API Docs](https://bloomin8.readme.io) | [Business Contact](mailto:support@fraimic.com)
+**Find Us:** [Official Website](https://fraimic.com) | [API Docs](https://fraimic.readme.io) | [Business Contact](mailto:support@fraimic.com)
 
 
 
