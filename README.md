@@ -41,7 +41,7 @@ unreachable — tap the frame to wake it first.
 The API uses standard HTTP. You can use any tool that speaks HTTP — curl from the command line, a
 web browser, Home Assistant’s REST integration, or any programming language.
 
-**• GET **requests retrieve information (battery status, device info)
+**• GET** requests retrieve information (battery status, device info)
 
 **• POST** requests trigger actions (restart, sleep, refresh, upload)
 
