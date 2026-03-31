@@ -2,7 +2,6 @@
 
 [](https://github.com/custom-components/hacs) [](https://github.com/4seacz/bloomin8_eink_canvas_home_assistant/releases) [](https://www.google.com/search?q=LICENSE)
 
-At a Glance
 Your Fraimic art frame has a built-in REST API — a set of web endpoints that let you control the frame and
 check its status from other devices on your local network. You can monitor battery level, trigger a display
 refresh, upload artwork, or put the frame to sleep — all from your phone, computer, or smart home system
