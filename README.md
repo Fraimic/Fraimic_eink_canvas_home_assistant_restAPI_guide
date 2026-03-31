@@ -26,117 +26,159 @@ guide — everything works through the built-in portal and voice recording.
 
 ## Getting Started
 
-First, get Fraimic on your network.
+### Finding Your Frame’s Address
 
-### 1\. Use the Fraimic Access Portal
+Every API request starts with your frame’s network address. There are two ways to reach it:
 
-[](https://fraimi.local)
+<img width="589" height="107" alt="Screenshot 2026-03-31 at 12 08 26 PM" src="https://github.com/user-attachments/assets/4574fac7-cf5c-4530-8e97-f47f13800057" />
 
+You can find the frame’s IP address on the portal at fraimic.local/info, or in your router’s DHCP client
+table.
+Important: Your frame must be awake and connected to WiFi. When it’s in deep sleep, it’s completely
+unreachable — tap the frame to wake it first.
 
-  * Step 1: Wake the device up by touching the mat.
-  * Step 2: Open WiFi settings and select "Fraimic_XXXX" (each device has its own unique network, so pick the one that starts with Fraimic)
-  * Step 3: An access portal should automatically open. If it does not, type fraimic.local into your browser window.
-  * **Grab the IP address.** You'll need this.
+## Making Requests
+The API uses standard HTTP. You can use any tool that speaks HTTP — curl from the command line, a
+web browser, Home Assistant’s REST integration, or any programming language.
 
-### 2\. Install the Integration
+**• GET **requests retrieve information (battery status, device info)
 
+**• POST** requests trigger actions (restart, sleep, refresh, upload)
 
-1.  Open HACS in Home Assistant.
-2.  Search for "Fraimic E-Ink Canvas" and install it.
-3.  Restart Home Assistant (we know, it's annoying, but it's the law).
+No authentication is required. Anyone on your local network can access these endpoints.
 
+## A Quick Test
+Open your browser and navigate to:
+http://fraimic.local/api/info
 
-### 3\. Add it to Home Assistant
+You should see a JSON response with your frame’s current status. If that works, you’re ready to use any of
+the endpoints below.
 
-1.  Go to `Settings` \> `Devices & Services`.
-2.  Click `Add Integration` and search for `FRAIMIC`.
-3.  Pop in the IP address you noted down earlier.
-4.  Give it a name. Something fun, like `Living Room Portal` or `The Void`.
-
------
-
-## What You Can Do With It
-
-### 🛠️ Available Services
+<img width="344" height="403" alt="Screenshot 2026-03-31 at 12 10 40 PM" src="https://github.com/user-attachments/assets/d1963209-7bd2-485f-9262-282ffe26d38a" />
 
 
-#### System Control
 
-  * `eink_display.show_next`: Flips to the next image in the gallery.
-  * `eink_display.sleep`: Puts the device to sleep. Sweet dreams.
-  * `eink_display.reboot`: The classic "turn it off and on again."
-  * `eink_display.clear_screen`: Wipes the screen to a clean slate.
-  * `eink_display.whistle`: Wakes the device up or keeps it from falling asleep.
-  * `eink_display.update_settings`: Change device settings like sleep duration on the fly.
-  * `eink_display.refresh_device_info`: Forces a poll for the latest device status.
+# Home Assistant Integration
+<img width="444" height="183" alt="Screenshot 2026-03-31 at 12 11 40 PM" src="https://github.com/user-attachments/assets/4aecb211-fa3d-45a8-9d6b-942a9cbf3012" />
 
-#### Image & Gallery Management
+This section walks you through adding Fraimic sensors and controls to your Home Assistant dashboard. By
+the end, you’ll have battery monitoring, WiFi signal tracking, and one-tap buttons for restart, sleep, refresh,
+and image upload.
 
-  * `media_player.play_media`: The main service for sending a new image to the display.
-  * **Media Browser:** Browse your device's galleries or upload new images directly from the Home Assistant media browser. It's slick.
+## Step 1: Add REST Sensors
+Open your Home Assistant configuration.yaml file and add the following block. This creates sensors that
+poll your frame every 5 minutes:
 
+rest:
+- resource: http://fraimic.local/api/info
+scan_interval: 300
+sensor:
+- name: "Fraimic Battery"
+value_template: "{{ value_json.battery.percent }}"
+unit_of_measurement: "%"
+device_class: battery
+- name: "Fraimic WiFi Signal"
+value_template: "{{ value_json.wifi.rssi }}"
+unit_of_measurement: "dBm"
+device_class: signal_strength
+- name: "Fraimic Firmware"
+value_template: "{{ value_json.firmware_version }}"
+- name: "Fraimic Charging"
+value_template: "{{ value_json.battery.charging }}"
+- name: "Fraimic IP"
+value_template: "{{ value_json.wifi.ip }}"
 
-**Display a new family photo every morning:**
+## Step 2: Add Shell Commands
+These give Home Assistant the ability to send action commands to your frame:
 
-```yaml
-service: media_player.play_media
-target:
-  entity_id: media_player.living_room_portal
+shell_command:
+fraimic_restart: >-
+curl -s -X POST http://fraimic.local/api/restart
+fraimic_sleep: >-
+curl -s -X POST http://fraimic.local/api/sleep
+fraimic_refresh: >-
+curl -s -X POST http://fraimic.local/api/refresh
+fraimic_upload: >-
+curl -s -X POST
+-H "Content-Type: application/octet-stream"
+--data-binary @/config/www/fraimic/{{ filename }}
+http://fraimic.local/api/image
+
+**Note on the upload command: **Place your .bin image files in /config/www/fraimic/ on your Home
+Assistant server. The {{ filename }} variable is passed when you call the command from a script or
+automation.
+
+## Step 3: Reload — No Restart Required
+After saving configuration.yaml, go to Developer Tools > YAML in Home Assistant and reload:
+
+• REST entities
+
+• Shell Commands
+
+A full Home Assistant restart is not needed. Your new sensors and commands will appear immediately.
+
+## Step 4: Create Scripts for Dashboard Buttons
+
+Go to Settings > Automations & Scenes > Scripts > Add Script, or add directly to your
+scripts.yaml:
+fraimic_restart:
+alias: "Fraimic Restart"
+icon: mdi:restart
+sequence:
+- service: shell_command.fraimic_restart
+fraimic_sleep:
+alias: "Fraimic Sleep"
+icon: mdi:sleep
+sequence:
+- service: shell_command.fraimic_sleep
+fraimic_refresh_display:
+alias: "Fraimic Refresh Display"
+icon: mdi:monitor
+sequence:
+- service: shell_command.fraimic_refresh
+- fraimic_display_dinosaur:
+alias: "Display Dinosaur"
+icon: mdi:dinosaur
+sequence:
+- service: shell_command.fraimic_upload
 data:
-  media_content_type: "image/jpeg"
-  media_content_id: "/media/local/photos/family_photo_of_the_day.jpg"
-```
+filename: dinosaur.bin
 
-**Put the frame to sleep when you go to bed:**
+## Step 5: Add Dashboard Buttons
+Add these button cards to your Fraimic area dashboard for one-tap control:
 
-```yaml
-service: button.press
-target:
-  entity_id: button.living_room_portal_sleep
-```
-
-Here are some ideas our team cooked up:
-
-  * **Morning Routine:** Show an inspiring, AI-generated landscape at 7 AM.
-  * **Weather Display:** Show a sunny image when it's nice out, or a rainy one when it's gloomy.
-  * **Evening Wind-down:** Switch to calm, minimalist art when your "Goodnight" scene runs.
-  * **Smart Sleep:** Automatically adjust sleep duration based on season or schedule.
-  * **Storage Monitoring:** Get notified when storage is running low.
-  * **Auto-refresh:** Periodically refresh device info to keep status current.
-
------
-
-## Troubleshooting (When Things Go Wrong)
-
-**Canvas not responding?**
-
-  * Is the IP address correct? Did it change?
-  * Are HA and the canvas on the same network? No VLAN weirdness?
-  * **Pro tip:** Try waking it up by taping the mat on the canvas first. This solves 90% of issues.
-
-**Image upload failed?**
-
-  * Is the file path in Home Assistant correct?
-  * It's an e-ink display, so high-contrast images look best.
-
-**Status not updating?**
-  * Make sure your device is awake.
-  * Try pressing the **Refresh Info** button or calling the `eink_display.refresh_device_info` service.
-  * Check the **Device Info** sensor for connection status.
-  * Restart the integration (or HA itself).
-
-**Still stuck? Enable debug logs.** Add this to your `configuration.yaml`:
-
-```yaml
-logger:
-  default: warning
-  logs:
-    custom_components.eink_display: debug
-```
+type: horizontal-stack
+cards:
+- type: button
+name: Restart
+icon: mdi:restart
+tap_action:
+action: perform-action
+perform_action: script.fraimic_restart
+- type: button
+name: Sleep
+icon: mdi:sleep
+tap_action:
+action: perform-action
+perform_action: script.fraimic_sleep
+- type: button
+name: Refresh
+icon: mdi:monitor
+tap_action:
+action: perform-action
+perform_action: script.fraimic_refresh_display
+- type: button
+name: Dinosaur
+icon: mdi:dinosaur
+tap_action:
+action: perform-action
+perform_action: script.fraimic_display_dinosaur
 
 
 
------
+## For more info including automation ideas, Troubleshooting and Endpoint Info see our complete [Home Assistant & Rest API Guide](https://drive.google.com/file/d/1fUTzi31iUK2e9K2TmfDHFkUWmTx56qLZ/view?usp=drive_link)
+
+
 
 **Find Us:** [Official Website](https://fraimic.com) | [API Docs](https://fraimic.readme.io) | [Business Contact](mailto:support@fraimic.com)
 
