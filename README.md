@@ -13,8 +13,11 @@ between your devices and the frame.
 
 ### What you can do with the API:
  • Monitor your frame — check battery, WiFi signal, firmware version, and display status
+ 
  • Control your frame — restart it, put it to sleep, or refresh the display
+ 
  • Display custom artwork — upload .bin image files directly to the frame
+ 
  • Integrate with Home Assistant — add Fraimic sensors and controls to your smart home dashboard
 
 The API is designed for Home Assistant users, tinkerers, and anyone who wants to automate their Fraimic
