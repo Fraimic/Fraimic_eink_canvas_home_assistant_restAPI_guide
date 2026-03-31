@@ -104,7 +104,7 @@ curl -s -X POST
 --data-binary @/config/www/fraimic/{{ filename }}
 http://fraimic.local/api/image
 
-**Note on the upload command: **Place your .bin image files in /config/www/fraimic/ on your Home
+**Note on the upload command:** Place your .bin image files in /config/www/fraimic/ on your Home
 Assistant server. The {{ filename }} variable is passed when you call the command from a script or
 automation.
 
