@@ -2,17 +2,21 @@
 
 [](https://github.com/custom-components/hacs) [](https://github.com/4seacz/bloomin8_eink_canvas_home_assistant/releases) [](https://www.google.com/search?q=LICENSE)
 
+## At A Glance
+
 Your Fraimic art frame has a built-in REST API — a set of web endpoints that let you control the frame and
 check its status from other devices on your local network. You can monitor battery level, trigger a display
 refresh, upload artwork, or put the frame to sleep — all from your phone, computer, or smart home system
 like Home Assistant.
 No internet required for local communication. No account needed. Everything runs on your WiFi network
 between your devices and the frame.
-What you can do with the API:
-• Monitor your frame — check battery, WiFi signal, firmware version, and display status
-• Control your frame — restart it, put it to sleep, or refresh the display
-• Display custom artwork — upload .bin image files directly to the frame
-• Integrate with Home Assistant — add Fraimic sensors and controls to your smart home dashboard
+
+### What you can do with the API:
+ • Monitor your frame — check battery, WiFi signal, firmware version, and display status
+ • Control your frame — restart it, put it to sleep, or refresh the display
+ • Display custom artwork — upload .bin image files directly to the frame
+ • Integrate with Home Assistant — add Fraimic sensors and controls to your smart home dashboard
+
 The API is designed for Home Assistant users, tinkerers, and anyone who wants to automate their Fraimic
 beyond the normal tap-and-speak experience. If you’re just using the frame normally, you don’t need this
 guide — everything works through the built-in portal and voice recording.
