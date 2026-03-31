@@ -1,4 +1,4 @@
-# Fraimic E-Ink Canvas for Home Assistant
+# Fraimic E-Ink Canvas Home Assistant & Rest API Guide
 
 [](https://github.com/custom-components/hacs) [](https://github.com/4seacz/bloomin8_eink_canvas_home_assistant/releases) [](https://www.google.com/search?q=LICENSE)
 
