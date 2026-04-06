@@ -180,7 +180,7 @@ perform_action: script.fraimic_display_dinosaur
 
 
 
-**Find Us:** [Official Website](https://fraimic.com) | [API Docs]([https://fraimic.readme.io](https://drive.google.com/file/d/1fUTzi31iUK2e9K2TmfDHFkUWmTx56qLZ/view)) | [Business Contact](mailto:support@fraimic.com)
+**Find Us:** [Official Website](https://fraimic.com) | [API Docs]([https://fraimic.readme.io](https://drive.google.com/file/d/1fUTzi31iUK2e9K2TmfDHFkUWmTx56qLZ/view)| [Business Contact](mailto:support@fraimic.com)
 
 
 
